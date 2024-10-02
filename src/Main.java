@@ -44,8 +44,7 @@ public class Main {
                     finalizarPedido();
                     break;
                 case 4:
-                    // Imprimir categorias e produtos
-                    categoriaList.forEach(Categoria::imprimir);
+                    //categoriaList.forEach(Categoria::imprimir);
                     produtoList.forEach(Produto::imprimir);
                     break;
                 case 0:
@@ -74,7 +73,7 @@ public class Main {
         System.out.println("1 - Criar Categoria");
         System.out.println("2 - Criar Produto");
         System.out.println("3 - Finalizar Pedido");
-        System.out.println("4 - Consultar Categorias e Produtos");
+        System.out.println("4 - Mostrar Cardápio");
         System.out.println("0 - Sair");
         System.out.print("Escolha uma opção: ");
     }
