@@ -1,0 +1,24 @@
+package classes.entrega;
+
+public class EntregaCarro extends Entrega{
+    private double consumoMedio; // Consumo médio em litros por quilômetro
+
+    public EntregaCarro(String nomeEntregador, double consumoMedio) {
+        super(nomeEntregador, "🚗");
+        this.consumoMedio = consumoMedio;
+    }
+
+    // Metodo para calcular o consumo total de gasolina com base na distância percorrida
+    public double calcularConsumoTotal() {
+        return getDistanciaPercorrida() * consumoMedio;
+    }
+
+    @Override
+    public void imprimirCaminho() {
+        super.imprimirCaminho();
+        System.out.println("Entrega realizada de carro.");
+        System.out.println("Consumo total de gasolina: " + String.format("%.2f", calcularConsumoTotal()) + " litros.");
+    }
+
+
+}
