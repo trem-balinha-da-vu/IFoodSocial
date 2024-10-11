@@ -13,21 +13,25 @@ import java.util.Scanner;
 
 public class Main {
 
+    // Scanner para leitura de entradas do usuário, configurado para usar o Locale US (para receber o numero quebrado com '.', exemplo: 1.5)
     static Scanner ler = new Scanner(System.in).useLocale(Locale.US);
-    private static List<Categoria> categoriaList = new ArrayList<>();
-    private static List<Produto> produtoList = new ArrayList<>();
-    private static List<Pedido> pedidoList = new ArrayList<>();
+
+    // Listas para armazenar categorias e produtos
+    private static final List<Categoria> categoriaList = new ArrayList<>();
+    private static final List<Produto> produtoList = new ArrayList<>();
 
     public static void main(String[] args) {
-        exibirBanner();
+        exibirBanner();// Exibe o banner inicial
 
         int opcao;
+        // Loop principal para exibir o menu e processar opções
         do {
-            menuPrincipal();
+            menuPrincipal();// Exibe o menu principal
             opcao = ler.nextInt();
-            ler.nextLine();
+            ler.nextLine();// Consome a nova linha
             switch (opcao) {
                 case 1:
+                    // Solicita dados da nova categoria e adiciona à lista
                     Categoria novaCategoria = solicitaDadosCategoria();
                     if (novaCategoria != null) {
                         categoriaList.add(novaCategoria);
@@ -35,6 +39,7 @@ public class Main {
                     }
                     break;
                 case 2:
+                    // Solicita dados do novo produto e adiciona à lista
                     Produto novoProduto = solicitaDadosProduto();
                     if (novoProduto != null) {
                         produtoList.add(novoProduto);
@@ -44,13 +49,15 @@ public class Main {
                     }
                     break;
                 case 3:
+                    // Finaliza um pedido, adicionando produtos selecionados
                     finalizarPedido();
                     break;
                 case 4:
-                    //categoriaList.forEach(Categoria::imprimir);
+                    // Exibe todos os produtos cadastrados
                     produtoList.forEach(Produto::imprimir);
                     break;
                 case 5:
+                    // Inicia o menu de entregas
                     menuEntregas();
                     break;
                 case 0:
@@ -61,10 +68,11 @@ public class Main {
             }
         } while (opcao != 0);
 
-        ler.close();
+        ler.close();// Fecha o scanner ao final
     }
 
     private static void exibirBanner() {
+        // Exibe um banner artístico na tela
         System.out.println();
         System.out.println(" ### #######                        #####                                 ");
         System.out.println("  #  #        ####   ####  #####   #     #  ####   ####  #   ##   #      ");
@@ -77,6 +85,7 @@ public class Main {
     }
 
     private static void menuPrincipal() {
+        // Exibe o menu principal com opções disponíveis
         System.out.println("\n=== Menu Principal ===");
         System.out.println("1 - 📂 Criar Categoria");
         System.out.println("2 - 🛒 Criar Produto");
@@ -88,25 +97,30 @@ public class Main {
     }
 
     private static Produto solicitaDadosProduto() {
-        Categoria c_produto = null;
+        Categoria c_produto = null;// Variável para armazenar a categoria do produto
+
+        // Lê dados do produto
         System.out.println("Informe o código do produto: ");
         String codigoProduto = ler.nextLine();
         System.out.println("Informe a descrição do produto: ");
         String descricaoProduto = ler.nextLine();
         System.out.println("Informe o preço do produto: ");
         double preco = ler.nextDouble();
-        ler.nextLine();
+        ler.nextLine();// Consome a nova linha
 
-
+        // Lê o código da categoria para associar ao produto
         System.out.println("Informe o código da categoria: ");
         String codigoCategoria = ler.nextLine();
+
+        // Busca a categoria correspondente
         for (Categoria categoria : categoriaList) {
             if (categoria.getCodigoCategoria().equals(codigoCategoria)) {
-                c_produto = categoria;
+                c_produto = categoria;// Associa a categoria encontrada
                 break;
             }
         }
 
+        // Verifica se a categoria foi encontrada
         if (c_produto == null) {
             System.out.println("Categoria não encontrada! Produto não adicionado.");
             return null; // Retorna null se a categoria não for encontrada
@@ -116,45 +130,50 @@ public class Main {
     }
 
     private static Categoria solicitaDadosCategoria() {
+        // Lê dados da nova categoria e retorna um objeto Categoria
         System.out.println("Informe o código da categoria: ");
         String codigoCategoria = ler.nextLine();
         System.out.println("Informe a descrição da categoria: ");
         String descricaoCategoria = ler.nextLine();
+
         return new Categoria(codigoCategoria, descricaoCategoria);
     }
 
     private static void finalizarPedido() {
-        Pedido pedido = new Pedido();
+        Pedido pedido = new Pedido();// Cria um novo pedido
         int opcaoProduto;
 
         do {
             System.out.println(" ");
             System.out.println("Escolha um produto para adicionar ao pedido (0 para finalizar):");
+
+            // Exibe a lista de produtos disponíveis
             for (int i = 0; i < produtoList.size(); i++) {
                 System.out.println((i + 1) + " - " + produtoList.get(i).getDescricaoProduto());
             }
             System.out.println("0 - Finalizar Pedido");
             System.out.print("Escolha uma opção: ");
-            opcaoProduto = ler.nextInt();
-            ler.nextLine();
+            opcaoProduto = ler.nextInt();// Lê a opção do produto
+            ler.nextLine();// Consome a nova linha
 
+            // Adiciona o produto ao pedido, se a opção for válida
             if (opcaoProduto > 0 && opcaoProduto <= produtoList.size()) {
                 pedido.adicionarProduto(produtoList.get(opcaoProduto - 1));
                 System.out.println("Produto adicionado ao pedido.");
             } else if (opcaoProduto != 0) {
                 System.out.println("Opção inválida! Tente novamente.");
             }
-        } while (opcaoProduto != 0);
+        } while (opcaoProduto != 0);// Continua até que o usuário finalize o pedido
 
-        pedidoList.add(pedido);
+        // imprime detalhes do pedido
         pedido.imprimir();
     }
 
     private static void menuEntregas() {
-        Entrega entrega = null;
+        Entrega entrega = null;// Variável para armazenar a entrega atual
 
         while (true) {
-            System.out.printf(" ");
+            System.out.println(" ");
             System.out.println("\n🌟--- Menu Entregas ---🌟");
             System.out.println("1 - 📦 Cadastrar nova entrega");
             System.out.println("2 - 🛤️ Mover entrega");
@@ -165,20 +184,23 @@ public class Main {
             System.out.print("Escolha uma opção: ");
 
             int opcao = ler.nextInt();
-            ler.nextLine(); // Consumir a nova linha
+            ler.nextLine(); // Consome a nova linha
 
             switch (opcao) {
                 case 1:
-                    entrega = cadastrarEntrega(ler);
+                    // Cadastra uma nova entrega
+                    entrega = cadastrarEntrega();
                     break;
                 case 2:
+                    // Move a entrega se uma entrega foi cadastrada
                     if (entrega != null) {
-                        moverEntrega(ler, entrega);
+                        moverEntrega(entrega);
                     } else {
                         System.out.println("Nenhuma entrega cadastrada!");
                     }
                     break;
                 case 3:
+                    // Visualiza o mapa da entrega se uma entrega foi cadastrada
                     if (entrega != null) {
                         entrega.visualizarMapa();
                     } else {
@@ -186,6 +208,7 @@ public class Main {
                     }
                     break;
                 case 4:
+                    // Imprime o caminho da entrega se uma entrega foi cadastrada
                     if (entrega != null) {
                         entrega.imprimirCaminho();
                     } else {
@@ -193,15 +216,17 @@ public class Main {
                     }
                     break;
                 case 5:
+                    // Finaliza a entrega se uma entrega foi cadastrada
                     if (entrega != null) {
                         System.out.println("Entrega finalizada.");
                         entrega.imprimirCaminho();
-                        return; // Finaliza o programa após a entrega
+                        return; // Retorna ao menu principal após a entrega
                     } else {
                         System.out.println("Nenhuma entrega cadastrada!");
                     }
                     break;
                 case 0:
+                    // Sai do menu de entregas
                     System.out.println("Saindo...");
                     return;
                 default:
@@ -209,24 +234,25 @@ public class Main {
             }
         }
     }
-
-    private static Entrega cadastrarEntrega(Scanner scanner) {
+    // Metodo para cadastrar uma nova entrega
+    private static Entrega cadastrarEntrega() {
         System.out.println("\n--- Cadastrar Entrega ---");
         System.out.print("Informe o nome do entregador: ");
-        String nomeEntregador = scanner.nextLine();
+        String nomeEntregador = ler.nextLine();// Lê o nome do entregador
 
         System.out.println("Escolha o tipo de entrega:");
         System.out.println("1. Entrega por Carro");
         System.out.println("2. Entrega por Drone");
         System.out.println("3. Entrega a Pé");
         System.out.print("Opção: ");
-        int tipoEntrega = scanner.nextInt();
-        scanner.nextLine(); // Consumir a nova linha
+        int tipoEntrega = ler.nextInt();// Lê o tipo de entrega
+        ler.nextLine(); // Consome a nova linha
 
+        // Cria a entrega com base no tipo escolhido
         switch (tipoEntrega) {
             case 1:
                 System.out.print("Informe o consumo médio do carro (litros por quadra): ");
-                double consumoMedio = scanner.nextDouble();
+                double consumoMedio = ler.nextDouble();//Lê dado de consumo de gasolina do carro
                 return new EntregaCarro(nomeEntregador, consumoMedio);
             case 2:
                 return new EntregaDrone(nomeEntregador);
@@ -234,11 +260,14 @@ public class Main {
                 return new EntregaAPe(nomeEntregador);
             default:
                 System.out.println("Tipo de entrega inválido!");
-                return null;
+                return null; // Retorna null se o tipo for inválido
         }
     }
 
-    private static void moverEntrega(Scanner scanner, Entrega entrega) {
+    // Metodo para mover a entrega para uma nova quadra
+    private static void moverEntrega(Entrega entrega) {
+
+        // Apresenta as opções de movimento disponíveis para o usuário
         System.out.println("\n--- Movimentar Entrega ---");
         System.out.println("1. Mover ao Norte");
         System.out.println("2. Mover ao Sul");
@@ -250,38 +279,44 @@ public class Main {
             System.out.println("5. Mover diretamente (apenas para drones)");
         }
 
+        // Solicita ao usuário que escolha uma direção para mover a entrega
         System.out.print("Escolha uma direção: ");
-        int direcao = scanner.nextInt();
-        scanner.nextLine(); // Consumir a nova linha
+        int direcao = ler.nextInt();
+        ler.nextLine(); // Consome a nova linha
 
+        // Verifica a direção escolhida e executa a movimentação correspondente
         switch (direcao) {
-            case 1:
+            case 1: // Movimento para o norte
                 System.out.print("Quantas quadras mover ao norte? ");
-                int norte = scanner.nextInt();
+                int norte = ler.nextInt();
                 entrega.moverNorte(norte);
                 break;
-            case 2:
+            case 2: // Movimento para o sul
                 System.out.print("Quantas quadras mover ao sul? ");
-                int sul = scanner.nextInt();
+                int sul = ler.nextInt();
                 entrega.moverSul(sul);
                 break;
-            case 3:
+            case 3: // Movimento para o leste
                 System.out.print("Quantas quadras mover ao leste? ");
-                int leste = scanner.nextInt();
+                int leste = ler.nextInt();
                 entrega.moverLeste(leste);
                 break;
-            case 4:
+            case 4: // Movimento para o oeste
                 System.out.print("Quantas quadras mover ao oeste? ");
-                int oeste = scanner.nextInt();
+                int oeste = ler.nextInt();
                 entrega.moverOeste(oeste);
                 break;
-            case 5:
-                if (entrega instanceof EntregaDrone) {
+            case 5: // Movimento direto (opção apenas para drones)
+                if (entrega instanceof EntregaDrone) {// verifica se o objeto entrega é realmente uma instância da classe EntregaDrone
                     System.out.print("Informe o destino X: ");
-                    int x = scanner.nextInt();
+                    int x = ler.nextInt();// Lê a coordenada X do destino
                     System.out.print("Informe o destino Y: ");
-                    int y = scanner.nextInt();
-                    ((EntregaDrone) entrega).moverDireto(x, y);
+                    int y = ler.nextInt();// Lê a coordenada Y do destino
+
+                    // Nesse trecho, o cast é como dizer ao compilador:
+                    // “Eu sei que entrega é um EntregaDrone, então me permita chamar o metodo
+                    // moverDireto que é específico desta classe”.
+                    ((EntregaDrone) entrega).moverDireto(x, y);// Chama o metodo para mover diretamente o drone para as coordenadas fornecidas
                 } else {
                     System.out.println("Opção inválida para este tipo de entrega!");
                 }
